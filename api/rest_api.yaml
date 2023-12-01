@@ -1,0 +1,487 @@
+openapi: 3.0.3
+info:
+  title: Social network API
+  description: REST API for a social network.
+  version: 0.1.0
+servers:
+  - url: /v1
+paths:
+  /u/{user_id}:
+    get:
+      tags:
+        - Users
+      summary: Просмотр анкеты пользователя.
+      description: >
+        Здесь должно быть более полное описание.
+      parameters:
+        - $ref: '#/components/parameters/userIDParam'
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+  /u/{user_id}/friends:
+    parameters:
+      - $ref: '#/components/parameters/userIDParam'
+      - $ref: '#/components/parameters/offsetParam'
+      - $ref: '#/components/parameters/limitParam'
+    get:
+      tags:
+        - Users
+      summary: Просмотр друзей пользователя.
+      description: >
+        Здесь должно быть более полное описание.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Friends'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Users
+      summary: Добавить друга.
+      description: >
+        Здесь должно быть более полное описание.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserId'
+      responses:
+        '201':
+          description: Created.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags:
+        - Users
+      summary: Удалить друга.
+      description: >
+        Здесь должно быть более полное описание.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserId'
+      responses:
+        '201':
+          description: Deleted.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+
+  /u/{user_id}/feed:
+    parameters:
+      - $ref: '#/components/parameters/userIDParam'
+      - $ref: '#/components/parameters/offsetParam'
+      - $ref: '#/components/parameters/limitParam'
+    get:
+      tags:
+        - Posts
+      summary: Просмотр ленты постов пользователя.
+      description: >
+        Здесь должно быть более полное описание.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feed'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Posts
+      summary: Публикация поста в ленту.
+      description: >
+        Здесь должно быть более полное описание.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Created.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+  /u/{user_id}/feed/{post_id}:
+    post:
+      tags:
+        - Posts
+      summary: Загрузка медиафайлов для поста.
+      description: >
+        Здесь должно быть более полное описание.
+      parameters:
+        - $ref: '#/components/parameters/userIDParam'
+        - name: post_id
+          in: path
+          description: Post ID.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Uploaded.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+
+
+  /u/{user_id}/chats:
+    get:
+      tags:
+        - Chats
+      summary: Просмотр чатов пользователя.
+      description: >
+        Здесь должно быть более полное описание.
+      parameters:
+        - $ref: '#/components/parameters/userIDParam'
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chats'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+  /u/{user_id}/chats/{chat_id}:
+    parameters:
+      - $ref: '#/components/parameters/userIDParam'
+      - $ref: '#/components/parameters/offsetParam'
+      - $ref: '#/components/parameters/limitParam'
+      - name: chat_id
+        in: path
+        description: Chat ID.
+        required: true
+        schema:
+          $ref: '#/components/schemas/ChatId'
+    get:
+      tags:
+        - Chats
+      summary: Чтение сообщений в чате.
+      description: >
+        Здесь должно быть более полное описание.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chats'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Posts
+      summary: Отправка сообщения в чат.
+      description: >
+        Здесь должно быть более полное описание.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageToCreate'
+      responses:
+        '201':
+          description: Created.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    offsetParam: # <-- Arbitrary name for the definition that will be used to refer to it.
+      # Not necessarily the same as the parameter name.
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        required: false
+      description: The number of items to skip before starting to collect the result set.
+    limitParam:
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+        required: false
+      description: The numbers of items to return.
+    userIDParam:
+       name: user_id
+       in: path
+       description: User ID.
+       required: true
+       schema:
+         $ref: '#/components/schemas/UserId'
+  responses:
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: User was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Internal Error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    UserId:
+      type: string
+      description: >
+        В этой схеме описывается формат идентификатора пользователя.
+    ChatId:
+      type: string
+      description: >
+        В этой схеме описывается формат идентификатора чата.
+    Profile:
+      type: object
+      description: >
+        Данные для отображения профиля пользователя. Состав полей расширяется по необходимости.
+      properties:
+        avatar_url:
+          type: string
+        first_name:
+          type: string
+          description: First name.
+        last_name:
+          type: string
+          description: Last name.
+        address:
+          type: object
+          description: Локация, указываемая в профиле.
+          properties:
+            country:
+              type: string
+            postcode:
+              type: string
+            city:
+              type: string
+        age:
+          type: integer
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - other
+    Friends:
+      type: array
+      items:
+        $ref: '#/components/schemas/Friend'
+    Friend:
+      type: object
+      description: >
+        Данные для отображения друга в списке друзей.
+      properties:
+        profile_url:
+          type: string
+          description: URL для перехода в профиль пользователя.
+        add_to_friends_url:
+          type: string
+          description: URL для кноки добавления в друзья.
+        send_message_url:
+          type: string
+          description: URL для кнопки отправки сообщения.
+        avatar_url:
+          type: string
+        first_name:
+          type: string
+          description: First name.
+        last_name:
+          type: string
+          description: Last name.
+        is_online:
+          type: boolean
+        is_confirmed:
+          type: boolean
+          description: Флаг, является ли профиль подтверждённым.
+    Feed:
+      type: array
+      items:
+        $ref: '#/components/schemas/Post'
+    Post:
+      type: object
+      description: >
+        Данные для отображения поста в ленте.
+      properties:
+        profile_url:
+          type: string
+          description: URL для перехода в профиль пользователя.
+        avatar_url:
+          type: string
+        first_name:
+          type: string
+          description: First name.
+        last_name:
+          type: string
+          description: Last name.
+        is_online:
+          type: boolean
+        is_confirmed:
+          type: boolean
+          description: Флаг, является ли профиль подтверждённым.
+        date:
+          type: string
+          description: Дата поста. [Готовая дата в строковом формате. При необходимости переделать на объект.]
+        content:
+          type: string
+          description: Текстовое содержание поста.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    Chats:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChatPreview'
+    ChatPreview:
+      type: object
+      description: >
+        Данные для отображения превьюшек чатов в списке чатов.
+      properties:
+        chat_url:
+          type: string
+          description: URL для перехода в чат.
+        avatar_url:
+          type: string
+          description: Аватарка собеседника.
+        first_name:
+          type: string
+          description: Имя собеседника.
+        last_name:
+          type: string
+          description: Фамилия собеседника.
+        is_online:
+          type: boolean
+        is_confirmed:
+          type: boolean
+          description: Флаг, является ли профиль собеседника подтверждённым.
+        date:
+          type: string
+          description: >
+            Дата последнего сообщения. [Готовая дата в строковом формате. При необходимости переделать на объект.]
+        content:
+          type: string
+          description: Превью текста последнего сообщения.
+    Chat:
+      type: array
+      items:
+        $ref: '#/components/schemas/Message'
+    Message:
+      type: object
+      description: Данные для отображение сообщения в чате.
+      properties:
+        avatar_url:
+          type: string
+          description: Аватарка собеседника.
+        first_name:
+          type: string
+          description: Имя собеседника.
+        last_name:
+          type: string
+          description: Фамилия собеседника.
+        is_online:
+          type: boolean
+        is_confirmed:
+          type: boolean
+          description: Флаг, является ли профиль собеседника подтверждённым.
+        date:
+          type: string
+          description: >
+            Дата сообщения. [Готовая дата в строковом формате. При необходимости переделать на объект.]
+        content:
+          type: string
+          description: Текст сообщения.
+    MessageToCreate:
+      type: object
+      description: Сообщение, отправленное пользователем.
+      properties:
+        content:
+          type: string
+          description: Текст сообщения.
+
+
